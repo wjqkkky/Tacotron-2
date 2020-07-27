@@ -118,7 +118,8 @@ def tacotron_synthesize(args, hparams, checkpoint, sentences=None):
 	output_dir = 'tacotron_' + args.output_dir
 
 	try:
-		checkpoint_path = tf.train.get_checkpoint_state(checkpoint).model_checkpoint_path
+		# checkpoint_path = tf.train.get_checkpoint_state(checkpoint).model_checkpoint_path
+		checkpoint_path = "logs-Tacotron/taco_pretrained/tacotron_model.ckpt-82500"
 		log('loaded model at {}'.format(checkpoint_path))
 	except:
 		raise RuntimeError('Failed to load checkpoint at {}'.format(checkpoint))
