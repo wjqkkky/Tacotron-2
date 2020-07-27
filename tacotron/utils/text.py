@@ -49,7 +49,7 @@ def sequence_to_text(sequence):
       s = _id_to_symbol[symbol_id]
       # Enclose ARPAbet back in curly braces:
       if len(s) > 1 and s[0] == '@':
-        s = '{%s}' % s[1:]
+        s = '{%s}' % s[1:] + " "
       result += s
   return result.replace('}{', ' ')
 
@@ -64,6 +64,7 @@ def _clean_text(text, cleaner_names):
 
 
 def _symbols_to_sequence(symbols):
+  symbols = symbols.split(" ")
   return [_symbol_to_id[s] for s in symbols if _should_keep_symbol(s)]
 
 
