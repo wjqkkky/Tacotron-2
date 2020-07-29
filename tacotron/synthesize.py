@@ -63,7 +63,7 @@ def run_eval(args, checkpoint_path, output_dir, hparams, sentences):
 	with open(os.path.join(eval_dir, 'map.txt'), 'w') as file:
 		for i, texts in enumerate(tqdm(sentences)):
 			start = time.time()
-			basenames = ['batch_{}_sentence_{}'.format(i, j) for j in range(len(texts))]
+			basenames = ['batch_{}_sentence_{}_feats'.format(i, j) for j in range(len(texts))]
 			mel_filenames, speaker_ids = synth.synthesize(texts, basenames, eval_dir, log_dir, None)
 
 			for elems in zip(texts, mel_filenames, speaker_ids):
@@ -119,7 +119,7 @@ def tacotron_synthesize(args, hparams, checkpoint, sentences=None):
 
 	try:
 		# checkpoint_path = tf.train.get_checkpoint_state(checkpoint).model_checkpoint_path
-		checkpoint_path = "logs-Tacotron/taco_pretrained/tacotron_model.ckpt-82500"
+		checkpoint_path = "logs-Tacotron/taco_pretrained/tacotron_model.ckpt-52500"
 		log('loaded model at {}'.format(checkpoint_path))
 	except:
 		raise RuntimeError('Failed to load checkpoint at {}'.format(checkpoint))
