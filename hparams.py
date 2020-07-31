@@ -85,9 +85,9 @@ hparams = tf.contrib.training.HParams(
 
 	#M-AILABS (and other datasets) trim params (there parameters are usually correct for any data, but definitely must be tuned for specific speakers)
 	trim_silence = True, #Whether to clip silence in Audio (at beginning and end of audio only, not the middle)
-	trim_fft_size = 2048, #Trimming window size
-	trim_hop_size = 512, #Trimmin hop length
-	trim_top_db = 40, #Trimming db difference from reference db (smaller==harder trim.)
+	trim_fft_size = 512, #Trimming window size
+	trim_hop_size = 128, #Trimmin hop length
+	trim_top_db = 60, #Trimming db difference from reference db (smaller==harder trim.)
 
 	#Mel and Linear spectrograms normalization/scaling and clipping
 	signal_normalization = True, #Whether to normalize mel spectrograms to some predefined range (following below parameters)
@@ -105,13 +105,13 @@ hparams = tf.contrib.training.HParams(
 	preemphasis = 0.97, #filter coefficient.
 
 	#Limits
-	min_level_db = -100,
+	min_level_db = -120,
 	ref_level_db = 20,
-	fmin = 95, #Set this to 55 if your speaker is male! if female, 95 should help taking off noise. (To test depending on dataset. Pitch info: male~[65, 260], female~[100, 525])
+	fmin = 125, #Set this to 55 if your speaker is male! if female, 95 should help taking off noise. (To test depending on dataset. Pitch info: male~[65, 260], female~[100, 525])
 	fmax = 7600, #To be increased/reduced depending on data.
 
 	#Griffin Lim
-	power = 1.5, #Only used in G&L inversion, usually values between 1.2 and 1.5 are a good choice.
+	power = 1.2, #Only used in G&L inversion, usually values between 1.2 and 1.5 are a good choice.
 	griffin_lim_iters = 60, #Number of G&L iterations, typically 30 is enough but we use 60 to ensure convergence.
 	GL_on_GPU = True, #Whether to use G&L GPU version as part of tensorflow graph. (Usually much faster than CPU but slightly worse quality too).
 	###########################################################################################################################################
@@ -151,7 +151,7 @@ hparams = tf.contrib.training.HParams(
 	prenet_layers = [256, 256], #number of layers and number of units of prenet
 	decoder_layers = 2, #number of decoder lstm layers
 	decoder_lstm_units = 1024, #number of decoder lstm units on each layer
-	max_iters = 10000, #Max decoder steps during inference (Just for safety from infinite loop cases)
+	max_iters = 1000, #Max decoder steps during inference (Just for safety from infinite loop cases)
 
 	#Residual postnet
 	postnet_num_layers = 5, #number of postnet convolutional layers

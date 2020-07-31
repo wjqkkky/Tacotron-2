@@ -9,6 +9,7 @@ through Unidecode. For other data, you can modify _characters. See TRAINING_DATA
 
 _pad = '_'
 _eos = '~'
+space = " "
 # _characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!\'\"(),-.:;? '
 _character_list = []
 with open("characters.txt") as f:
@@ -21,4 +22,4 @@ with open("characters.txt") as f:
 # _arpabet = ['@' + s for s in cmudict.valid_symbols]
 
 # Export all symbols:
-symbols = [_pad, _eos] + _character_list  # + _arpabet
+symbols = [_pad, _eos, space] + _character_list  # + _arpabet

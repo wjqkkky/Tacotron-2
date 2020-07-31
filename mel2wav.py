@@ -11,5 +11,5 @@ for file in files:
 		path_file = os.path.join(mel_dir, file)
 		mel_data = np.load(path_file)
 		wav = audio.inv_mel_spectrogram(mel_data.T, hparams)
-		wav_name = os.path.join("wavs/", file[:-3] + ".wav")
+		wav_name = os.path.join("wavs/", file[:-3] + "wav")
 		audio.save_wav(wav, wav_name, sr=22050)
