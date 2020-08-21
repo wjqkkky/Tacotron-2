@@ -2,6 +2,7 @@ import re
 
 from . import cleaners
 from .symbols import symbols
+from .symbols import is_arpabet
 
 # Mappings from symbol to numeric ID and vice versa:
 _symbol_to_id = {s: i for i, s in enumerate(symbols)}
@@ -15,7 +16,7 @@ def text_to_sequence(text, cleaner_names):
 	'''Converts a string of text to a sequence of IDs corresponding to the symbols in the text.
 
 	  The text can optionally have ARPAbet sequences enclosed in curly braces embedded
-	  in it. For example, "Turn left on {HH AW1 S S T AH0 N} Street."
+	  in it. For example, "Turn left on HH AW1 S S T AH0 N Street."
 
 	  Args:
 		text: string to convert to a sequence
@@ -27,14 +28,7 @@ def text_to_sequence(text, cleaner_names):
 	sequence = []
 
 	# Check for curly braces and treat their contents as ARPAbet:
-	while len(text):
-		m = _curly_re.match(text)
-		if not m:
-			sequence += _symbols_to_sequence(_clean_text(text, cleaner_names))
-			break
-		sequence += _symbols_to_sequence(_clean_text(m.group(1), cleaner_names))
-		sequence += _arpabet_to_sequence(m.group(2))
-		text = m.group(3)
+	sequence += _symbols_to_sequence(_clean_text(text, cleaner_names))
 
 	# Append EOS token
 	sequence.append(_symbol_to_id['~'])
@@ -48,10 +42,11 @@ def sequence_to_text(sequence):
 		if symbol_id in _id_to_symbol:
 			s = _id_to_symbol[symbol_id]
 			# Enclose ARPAbet back in curly braces:
-			if len(s) > 1 and s[0] == '@':
-				s = '{%s}' % s[1:]
+			# if len(s) > 1 and s[0] == '@':
+			# 	s = '{%s}' % s[1:]
 			result += s
-	return result.replace('}{', ' ')
+	# return result.replace('}{', ' ')
+	return result
 
 
 def _clean_text(text, cleaner_names):
@@ -65,15 +60,24 @@ def _clean_text(text, cleaner_names):
 
 def _symbols_to_sequence(symbols):
 	seq = []
+	pre_is_arpabet = False
 	symbols = symbols.split(" ")
 	for s in symbols:
+		id_s = _symbol_to_id[s]
 		if _should_keep_symbol(s):
-			id_s = _symbol_to_id[s]
-			if s[-1] in ["1", "2", "3", "4", "5"]:
-				seq.append(id_s)
+			if pre_is_arpabet and not is_arpabet(s):
 				seq.append(_symbol_to_id[" "])
+				seq.append(id_s)
+				if s[-1] in ["1", "2", "3", "4", "5"] or s == ",":
+					seq.append(_symbol_to_id[" "])
+				pre_is_arpabet = False
+			elif not pre_is_arpabet and not is_arpabet(s):
+				seq.append(id_s)
+				if s[-1] in ["1", "2", "3", "4", "5"] or s == ",":
+					seq.append(_symbol_to_id[" "])
 			else:
 				seq.append(id_s)
+				pre_is_arpabet = True
 	return seq
 
 
